@@ -1,0 +1,14 @@
+# Eclipse
+.settings/org.eclipse.buildship.core.prefs
+*/.settings/org.eclipse.buildship.core.prefs
+bin
+.classpath
+.project
+
+# IntelliJ
+.idea
+out
+
+# Gradle
+.gradle
+build

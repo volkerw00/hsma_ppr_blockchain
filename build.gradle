@@ -1,0 +1,43 @@
+subprojects {
+    apply plugin: 'java'
+
+    group 'de.hsma.ppr.blockchain'
+    version = '1.0-SNAPSHOT'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'com.google.guava:guava:27.0.1-jre'
+
+        compile 'io.dropwizard:dropwizard-core:${dropwizardVersion}'
+        compile 'org.whispersystems:websocket-resources:0.5.9'
+
+        testCompile 'io.dropwizard:dropwizard-testing:${dropwizardVersion}'
+
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.hamcrest:hamcrest-core:1.3'
+        testCompile 'org.hamcrest:hamcrest-library:1.3'
+    }
+
+    ext {
+        dropwizardVersion = '1.3.5'
+    }
+}
+
+project(':node') {
+    dependencies {
+        implementation project(':node-base')
+        implementation project(':blockchain')
+    }
+}
+
+project(':bootnode') {
+    dependencies {
+        implementation project(':node-base')
+        implementation project(':blockchain')
+    }
+}

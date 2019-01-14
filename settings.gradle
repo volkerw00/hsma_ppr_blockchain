@@ -1,0 +1,7 @@
+rootProject.name = 'ppr-project'
+
+include 'blockchain'
+include 'node-base'
+include 'node'
+include 'bootnode'
+

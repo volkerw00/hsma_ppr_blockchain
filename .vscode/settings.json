@@ -1,0 +1,8 @@
+{
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+		"editor.insertSpaces": false,
+		"editor.rulers": [120],
+		
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

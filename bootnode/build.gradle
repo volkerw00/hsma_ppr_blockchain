@@ -1,0 +1,9 @@
+plugins {
+    id 'application'
+}
+
+mainClassName = 'de.hsma.ppr.blockchain.bootnode.BootNode'
+
+run {
+    args 'server', 'src/main/resources/configuration.yaml'
+}

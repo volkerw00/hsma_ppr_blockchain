@@ -1,0 +1,84 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "bootnode",
+                "projectName": "bootnode",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\bootnode",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "node",
+                "projectName": "node",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "blockchain",
+                "projectName": "blockchain",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\blockchain",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "node-base",
+                "projectName": "node-base",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node-base",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "bootnode",
+                "projectName": "bootnode",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\bootnode",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "node",
+                "projectName": "node",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "blockchain",
+                "projectName": "blockchain",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\blockchain",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            },
+            {
+                "name": "node-base",
+                "projectName": "node-base",
+                "workingDirectory": "c:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node-base",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}

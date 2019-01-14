@@ -1,0 +1,24 @@
+server:
+  applicationConnectors:
+  - type: http
+    port: 5101
+  adminConnectors:
+  - type: http
+    port: 6101
+  requestLog:
+    appenders: []
+
+logging:
+  level: DEBUG
+  loggers:
+    de.hsma.ppr.blockchain: TRACE
+    javax.management: INFO
+    io.dropwizard: INFO
+    org.eclipse.jetty: INFO
+    org.glassfish.jersey: INFO
+  appenders:
+  - type: console
+
+bootnodes:
+  urls:
+    - ws://localhost:5001

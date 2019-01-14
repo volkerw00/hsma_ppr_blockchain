@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "(Launch) - Node :5101",
+            "projectName": "node",
+            "request": "launch",
+            "mainClass": "de.hsma.ppr.blockchain.node.Node",
+            "args": "server C:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node\\src\\main\\resources\\configuration.yaml"
+        },
+        {
+            "type": "java",
+            "name": "(Launch) - Node :5102",
+            "projectName": "node",
+            "request": "launch",
+            "mainClass": "de.hsma.ppr.blockchain.node.Node",
+            "args": "server C:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\node\\src\\main\\resources\\configuration.yaml",
+            "vmArgs": "-Ddw.server.applicationConnectors[0].port=5102 -Ddw.server.adminConnectors[0].port=6102"
+        },
+        {
+            "type": "java",
+            "name": "(Launch) - BootNode",
+            "projectName": "bootnode",
+            "request": "launch",
+            "mainClass": "de.hsma.ppr.blockchain.bootnode.BootNode",
+            "args": "server C:\\Users\\volker\\OneDrive\\Documents\\Master_doc\\PPR_WS1819\\project\\bootnode\\src\\main\\resources\\configuration.yaml"
+        }
+    ]
+}
