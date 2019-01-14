@@ -1,12 +1,12 @@
 package de.hsma.ppr.blockchain.node.peers;
 
-import de.hsma.ppr.blockchain.core.BlockChain;
-import de.hsma.ppr.blockchain.nodes.resource.Peer;
-import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
 import org.whispersystems.websocket.messages.WebSocketRequestMessage;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 
-import java.net.ConnectException;
+import de.hsma.ppr.blockchain.core.BlockChain;
+import de.hsma.ppr.blockchain.nodes.resource.Peer;
+import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
+import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 
 public class WebSocketPeer
 {
@@ -31,7 +31,7 @@ public class WebSocketPeer
 		});
 	}
 
-	public static WebSocketPeer connect(Peer peer) throws ConnectException
+	public static WebSocketPeer connect(Peer peer) throws WsConnectException
 	{
 		return new WebSocketPeer(WebSocketInterface.connect(peer.getAddress()));
 	}

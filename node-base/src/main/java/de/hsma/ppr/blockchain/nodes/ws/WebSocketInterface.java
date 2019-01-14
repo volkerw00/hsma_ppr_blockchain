@@ -1,7 +1,19 @@
 package de.hsma.ppr.blockchain.nodes.ws;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketException;
@@ -14,19 +26,12 @@ import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.whispersystems.websocket.messages.*;
+import org.whispersystems.websocket.messages.InvalidMessageException;
+import org.whispersystems.websocket.messages.WebSocketMessage;
+import org.whispersystems.websocket.messages.WebSocketMessageFactory;
+import org.whispersystems.websocket.messages.WebSocketRequestMessage;
+import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 import org.whispersystems.websocket.messages.protobuf.ProtobufWebSocketMessageFactory;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.security.SecureRandom;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @WebSocket(maxTextMessageSize = 64 * 1024, maxIdleTime = 30000)
 public class WebSocketInterface
@@ -85,12 +90,12 @@ public class WebSocketInterface
 	{
 	}
 
-	public static WebSocketInterface connect(String url) throws ConnectException
+	public static WebSocketInterface connect(String url) throws WsConnectException
 	{
 		return new WebSocketInterface().doConnect(url);
 	}
 
-	private WebSocketInterface doConnect(String url) throws ConnectException
+	private WebSocketInterface doConnect(String url) throws WsConnectException
 	{
 		String target = String.format("%s/ws/", url);
 		try
@@ -103,10 +108,9 @@ public class WebSocketInterface
 			client.connect(this, uri, request).get(10, TimeUnit.SECONDS);
 		} catch (Throwable t)
 		{
-			if (hasCause(t, ConnectException.class)) { throw (java.net.ConnectException) t.getCause(); }
-			t.printStackTrace();
-			// TODO
-			throw new RuntimeException(String.format("Failed to establish websocket connection to %s.", target), t);
+			if (hasCause(t, ConnectException.class))
+			{ throw new WsConnectException(target, t); }
+			throw new WsRuntimeException(t);
 		}
 		return this;
 	}
@@ -157,13 +161,13 @@ public class WebSocketInterface
 				handleResponse(message.getResponseMessage());
 			} else
 			{
+				// improper but good enough
 				System.out.println("Received websocket message of unknown type: " + message.getType());
-				// TODO
 			}
 		} catch (InvalidMessageException e)
 		{
-			e.printStackTrace();
-			// TODO
+			// improper but good enough
+			throw new WsRuntimeException(e);
 		}
 	}
 

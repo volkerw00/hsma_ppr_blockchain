@@ -28,14 +28,20 @@ subprojects {
     }
 }
 
-project(':node') {
+project(':node-base') {
+    dependencies {
+        implementation project(':blockchain')
+    }
+}
+
+project(':bootnode') {
     dependencies {
         implementation project(':node-base')
         implementation project(':blockchain')
     }
 }
 
-project(':bootnode') {
+project(':node') {
     dependencies {
         implementation project(':node-base')
         implementation project(':blockchain')

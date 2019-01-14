@@ -1,20 +1,26 @@
 package de.hsma.ppr.blockchain.bootnode;
 
-import de.hsma.ppr.blockchain.nodes.resource.Peer;
-import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.session.WebSocketSession;
 import org.whispersystems.websocket.session.WebSocketSessionContext;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import de.hsma.ppr.blockchain.nodes.resource.Peer;
+import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
+import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 
 @Path("/ws/peers")
 public class PeerWsResource
@@ -55,7 +61,7 @@ public class PeerWsResource
 			{
 				WebSocketInterface webSocket = connect(peer);
 				webSocket.sendRequest("POST", "/ws/peers", newPeer.asJsonByteArray());
-			} catch (ConnectException e)
+			} catch (WsConnectException e)
 			{
 				removePeer(peer);
 			}
@@ -67,7 +73,7 @@ public class PeerWsResource
 		return new ArrayList<>(peers);
 	}
 
-	private WebSocketInterface connect(Peer peer) throws ConnectException
+	private WebSocketInterface connect(Peer peer) throws WsConnectException
 	{
 		return WebSocketInterface.connect(peer.getAddress());
 	}
@@ -81,7 +87,7 @@ public class PeerWsResource
 			{
 				WebSocketInterface client = connect(peer);
 				client.sendRequest("DELETE", "/ws/peers", removedPeer.asJsonByteArray());
-			} catch (ConnectException e)
+			} catch (WsConnectException e)
 			{
 				removePeer(peer);
 			}

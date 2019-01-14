@@ -11,6 +11,7 @@ import org.eclipse.jetty.server.ServerConnector;
 
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.configuration.BootNodes;
+import de.hsma.ppr.blockchain.node.exception.NodeRuntimeException;
 import de.hsma.ppr.blockchain.node.peers.Peers;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 
@@ -113,9 +114,7 @@ public class BootNodeConnector
 			                     connector.getLocalPort());
 		} catch (UnknownHostException e)
 		{
-			e.printStackTrace();
-			// TODO
-			throw new RuntimeException(e);
+			throw new NodeRuntimeException(e);
 		}
 	}
 }

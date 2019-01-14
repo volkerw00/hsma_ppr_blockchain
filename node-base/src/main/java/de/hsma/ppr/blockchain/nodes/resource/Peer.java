@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.MoreObjects;
 
+import de.hsma.ppr.blockchain.exception.ByteConversionFailedExcetion;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -76,9 +78,7 @@ public class Peer
 			return new HashSet<Peer>(peerList);
 		} catch (IOException e)
 		{
-			// TODO
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			throw new ByteConversionFailedExcetion(e);
 		}
 	}
 }

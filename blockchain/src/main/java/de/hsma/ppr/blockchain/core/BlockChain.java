@@ -2,18 +2,22 @@ package de.hsma.ppr.blockchain.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.hsma.ppr.blockchain.exception.BlockChainNotValidException;
+import de.hsma.ppr.blockchain.exception.ByteConversionFailedExcetion;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
 public class BlockChain
 {
-	public static BlockChain forBlocks(List<Block> blocks)
+	public static BlockChain forBlocks(List<Block> blocks) throws BlockChainNotValidException
 	{
 		LinkedList<Block> list = new LinkedList<>(blocks);
 
 		Collections.sort(list, (lb, rb) -> {
-			if (lb.hash().equals(rb.lastHash())) { return -1; }
+			if (lb.hash().equals(rb.lastHash()))
+			{ return -1; }
 			return 1;
 		});
 
@@ -24,10 +28,7 @@ public class BlockChain
 
 		BlockChain blockChain = new BlockChain(blocks);
 		if (!isValid(blockChain))
-		{
-			// TODO checked exception
-			throw new RuntimeException("blocks do not build a valid blockChain");
-		}
+		{ throw new BlockChainNotValidException(); }
 		return blockChain;
 	}
 
@@ -87,7 +88,8 @@ public class BlockChain
 				block = i$blockChain.next();
 				if (!block.isParent(lastBlock)
 				    || !Block.isValidHash(block)
-				    || Difficulty.isDifficultyJumped(lastBlock, block)) { return false; }
+				    || Difficulty.isDifficultyJumped(lastBlock, block))
+				{ return false; }
 				lastBlock = block;
 			}
 		}
@@ -132,13 +134,11 @@ public class BlockChain
 			return out.toByteArray();
 		} catch (IOException e)
 		{
-			e.printStackTrace();
-			// TODO
-			throw new RuntimeException(e);
+			throw new ByteConversionFailedExcetion(e);
 		}
 	}
 
-	public static BlockChain fromJsonArray(byte[] bytes)
+	public static BlockChain fromJsonArray(byte[] bytes) throws BlockChainNotValidException
 	{
 		try
 		{
@@ -146,9 +146,7 @@ public class BlockChain
 			return BlockChain.forBlocks(Arrays.asList(blocks));
 		} catch (IOException e)
 		{
-			e.printStackTrace();
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
+			throw new ByteConversionFailedExcetion(e);
 		}
 	}
 }

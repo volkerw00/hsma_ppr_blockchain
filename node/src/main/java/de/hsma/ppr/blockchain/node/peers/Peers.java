@@ -1,18 +1,20 @@
 package de.hsma.ppr.blockchain.node.peers;
 
+import static java.util.stream.Collectors.toSet;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.hsma.ppr.blockchain.core.Block;
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.core.BlockChain.Listener;
 import de.hsma.ppr.blockchain.node.configuration.Configuration;
 import de.hsma.ppr.blockchain.nodes.resource.Peer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import static java.util.stream.Collectors.toSet;
+import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 
 public class Peers
 {
@@ -44,7 +46,7 @@ public class Peers
 			try
 			{
 				WebSocketPeer.connect(peer).broadCastNewBlock(blockChain);
-			} catch (ConnectException e)
+			} catch (WsConnectException e)
 			{
 				removePeer(peer);
 			}

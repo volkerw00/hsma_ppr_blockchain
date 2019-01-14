@@ -4,6 +4,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.whispersystems.websocket.messages.WebSocketRequestMessage;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 
+import de.hsma.ppr.blockchain.nodes.ws.WsRuntimeException;
+
 import java.io.IOException;
 
 @WebSocket(maxTextMessageSize = 64 * 1024, maxIdleTime = 30000)
@@ -30,10 +32,10 @@ public class Client implements WebSocketInterface.Listener
 
 			} catch (IOException e)
 			{
-				e.printStackTrace();
-				// TODO
+				throw new WsRuntimeException(String.format("Failed to send request/response for id %s",
+				                                           requestMessage.getRequestId()),
+				                             e);
 			}
-
 		} else
 		{
 			try
@@ -41,8 +43,9 @@ public class Client implements WebSocketInterface.Listener
 				webSocket.sendResponse(requestMessage.getRequestId(), 404, "NOT FOUND", null);
 			} catch (IOException e)
 			{
-				e.printStackTrace();
-				// TODO
+				throw new WsRuntimeException(String.format("Failed to send response for id %s",
+				                                           requestMessage.getRequestId()),
+				                             e);
 			}
 		}
 	}

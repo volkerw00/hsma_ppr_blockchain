@@ -1,6 +1,5 @@
 package de.hsma.ppr.blockchain.node.configuration;
 
-import java.net.ConnectException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +22,8 @@ import de.hsma.ppr.blockchain.node.peers.Peers;
 import de.hsma.ppr.blockchain.nodes.async.FutureCallback;
 import de.hsma.ppr.blockchain.nodes.async.Futures;
 import de.hsma.ppr.blockchain.nodes.resource.Peer;
+import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
+import de.hsma.ppr.blockchain.nodes.ws.WsRuntimeException;
 
 public class BootNodes
 {
@@ -127,7 +128,7 @@ public class BootNodes
 	public BootNodeConnectionBuilder connect(String localAdress)
 	{
 		Map<String, BootNodeClient> bootNodeConnections = new HashMap<>();
-		// TODO should only connect to one bootNode, but momentarily there is just one
+		// should only connect to one bootNode, but momentarily there is just one
 		for (String bootNode : bootNodes)
 		{
 			logger.debug("Connecting to bootNode {}...", bootNode);
@@ -141,11 +142,10 @@ public class BootNodes
 		try
 		{
 			return BootNodeClient.connect(bootNode);
-		} catch (ConnectException e)
+		} catch (WsConnectException e)
 		{
-			e.printStackTrace();
-			// TODO
-			throw new RuntimeException(String.format("Failed to connect to bootNode %s", bootNode), e);
+			// should be properly handled, but we don't care at the moment
+			throw new WsRuntimeException(e);
 		}
 	}
 
@@ -156,8 +156,7 @@ public class BootNodes
 			return bootNodeClient.getBlockChain().get();
 		} catch (InterruptedException | ExecutionException e)
 		{
-			e.printStackTrace();
-			// TODO Auto-generated catch block
+			// TODO handle concurrency exception
 			throw new RuntimeException(e);
 		}
 	}
@@ -167,15 +166,9 @@ public class BootNodes
 		try
 		{
 			return bootNodeClient.getPeers().get();
-		} catch (InterruptedException e)
+		} catch (InterruptedException | ExecutionException e)
 		{
-			// TODO
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} catch (ExecutionException e)
-		{
-			e.printStackTrace();
-			// TODO
+			// TODO handle concurrency exception
 			throw new RuntimeException(e);
 		}
 	}
