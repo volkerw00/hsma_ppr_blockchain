@@ -6,8 +6,10 @@ import static de.hsma.ppr.blockchain.nodes.dropwizard.WebsocketApplicationHelper
 import org.whispersystems.websocket.setup.WebSocketEnvironment;
 
 import de.hsma.ppr.blockchain.core.BlockChain;
-import de.hsma.ppr.blockchain.resource.BlockChainResource;
-import de.hsma.ppr.blockchain.resource.BlockChainWsResource;
+import de.hsma.ppr.blockchain.nodes.peers.Peers;
+import de.hsma.ppr.blockchain.nodes.resource.BlockChainResource;
+import de.hsma.ppr.blockchain.nodes.resource.BlockChainWsResource;
+import de.hsma.ppr.blockchain.nodes.resource.PeerWsResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -17,12 +19,21 @@ public class BootNode extends Application<Configuration>
 	public void run(Configuration configuration, Environment environment) throws Exception
 	{
 		BlockChain blockChain = new BlockChain();
-		PeerWsResource peerResource = new PeerWsResource(configuration.getBootNodes().getSelf());
-		BlockChainWsResource blockChainWsResource = new BlockChainWsResource(blockChain);
+		
+		BootNodes bootNodes = configuration.getBootNodes();
+		BootNodePeerWsResource bootNodePeerWsresource = new BootNodePeerWsResource(bootNodes.getSelf());
+		bootNodes.connect(blockChain);
+
+		Peers peers = new Peers();
+		PeerWsResource peerWsResource = new PeerWsResource(peers);
+
+		BlockChainWsResource blockChainWsResource = new BlockChainWsResource(blockChain, peers);
+
 		WebSocketEnvironment webSocketEnvironment = registerWebsocketComponent(
 		                                                                       configuration.getWebSocketConfiguration(),
 		                                                                       environment,
-		                                                                       peerResource,
+																																					 bootNodePeerWsresource,
+																																					 peerWsResource,
 		                                                                       blockChainWsResource);
 		registerWebSocketServlet(environment, webSocketEnvironment);
 

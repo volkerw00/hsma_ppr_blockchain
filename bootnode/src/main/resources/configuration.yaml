@@ -21,3 +21,5 @@ logging:
 
 bootnodes:
   self: ws://localhost:5001 
+  urls: []
+    

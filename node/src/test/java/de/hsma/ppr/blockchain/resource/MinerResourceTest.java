@@ -3,6 +3,7 @@ package de.hsma.ppr.blockchain.resource;
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.miner.Miner;
 import de.hsma.ppr.blockchain.node.resource.MinerResource;
+import de.hsma.ppr.blockchain.nodes.resource.BlockChainResource;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.ClassRule;
 import org.junit.Test;

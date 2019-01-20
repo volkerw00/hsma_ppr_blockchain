@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.resource;
+package de.hsma.ppr.blockchain.nodes.resource;
 
 import java.util.LinkedList;
 

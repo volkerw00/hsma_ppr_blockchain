@@ -11,8 +11,8 @@ import org.eclipse.jetty.server.ServerConnector;
 
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.configuration.BootNodes;
-import de.hsma.ppr.blockchain.node.exception.NodeRuntimeException;
-import de.hsma.ppr.blockchain.node.peers.Peers;
+import de.hsma.ppr.blockchain.nodes.exception.NodeRuntimeException;
+import de.hsma.ppr.blockchain.nodes.peers.Peers;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 
 public class BootNodeConnector
@@ -87,12 +87,15 @@ public class BootNodeConnector
 	{
 		lifeCycleEnvironment.addServerLifecycleListener(server -> {
 			Stream<ServerConnector> connectors = getApplicationConnectors(server.getConnectors());
-			connectors.map(c -> getLocalAdress(c))
-			          .forEach(localAdress -> {
-				          bootNodes.connect(localAdress)
+			connectors.map(c -> getLocalAddress(c))
+			          .forEach(localAddress -> {
+				          bootNodes.connect(localAddress)
 				                   .fetchPeers(peers)
 				                   .fetchBlockChain(blockChain)
-				                   .onConnectionEstablished(() -> listener.onConnectionEstablished())
+				                   .onConnectionEstablished(() -> {
+					                   peers.addPeer(localAddress);
+					                   listener.onConnectionEstablished();
+				                   })
 				                   .establish();
 			          });
 		});
@@ -105,7 +108,7 @@ public class BootNodeConnector
 		                         .filter(c -> "application".equals(c.getName()));
 	}
 
-	private String getLocalAdress(ServerConnector connector)
+	private String getLocalAddress(ServerConnector connector)
 	{
 		try
 		{

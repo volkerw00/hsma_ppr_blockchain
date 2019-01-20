@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.nodes.resource;
+package de.hsma.ppr.blockchain.nodes.peers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;

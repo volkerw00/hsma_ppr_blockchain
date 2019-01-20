@@ -12,11 +12,11 @@ import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.bootnode.BootNodeConnector;
 import de.hsma.ppr.blockchain.node.configuration.Configuration;
 import de.hsma.ppr.blockchain.node.miner.Miner;
-import de.hsma.ppr.blockchain.node.peers.PeerWsResource;
-import de.hsma.ppr.blockchain.node.peers.Peers;
+import de.hsma.ppr.blockchain.nodes.resource.PeerWsResource;
 import de.hsma.ppr.blockchain.node.resource.MinerResource;
-import de.hsma.ppr.blockchain.resource.BlockChainResource;
-import de.hsma.ppr.blockchain.resource.BlockChainWsResource;
+import de.hsma.ppr.blockchain.nodes.peers.Peers;
+import de.hsma.ppr.blockchain.nodes.resource.BlockChainResource;
+import de.hsma.ppr.blockchain.nodes.resource.BlockChainWsResource;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.setup.Environment;
 
@@ -25,12 +25,20 @@ public class Node extends io.dropwizard.Application<Configuration>
 	@Override
 	public void run(Configuration configuration, Environment environment) throws Exception
 	{
-		Peers peers = Peers.createPeers(configuration);
+		Peers peers = configuration.getPeers();
+		peers.addPeers(configuration.getBootNodes().getBootNodes());
+		peers.broadCastSelf(environment.lifecycle());
+
 		BlockChain blockChain = new BlockChain();
 		blockChain.addListener(peers.peerUpdateListener());
+
 		Miner miner = Miner.withBlockChain(blockChain);
 
-		setupWebSocketResource(configuration, environment, new PeerWsResource(peers), new BlockChainWsResource(blockChain));
+		setupWebSocketResource(configuration,
+		                       environment,
+		                       new PeerWsResource(peers),
+													 new BlockChainWsResource(blockChain, peers));
+													 
 		BootNodeConnector.bootNodeConnector()
 		                 .bootNodes(configuration.getBootNodes())
 		                 .lifeCycleEnvironment(environment.lifecycle())

@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.resource;
+package de.hsma.ppr.blockchain.nodes.resource;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.hsma.ppr.blockchain.core.Block;
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.exception.BlockChainNotValidException;
+import de.hsma.ppr.blockchain.nodes.peers.Peers;
 
 @Path("/ws/blockChain")
 public class BlockChainWsResource
@@ -25,9 +26,12 @@ public class BlockChainWsResource
 
 	private final BlockChain blockChain;
 
-	public BlockChainWsResource(BlockChain blockChain)
+	private final Peers peers;
+
+	public BlockChainWsResource(BlockChain blockChain, Peers peers)
 	{
 		this.blockChain = blockChain;
+		this.peers = peers;
 	}
 
 	@PUT
@@ -48,6 +52,7 @@ public class BlockChainWsResource
 		if (chainReplaced)
 		{
 			logger.info("Replaced chain with received chain ending on {}", blockChain.lastBlock().hash());
+			broadCastBlock(blockChain);
 		} else
 		{
 			logger.info("Received blockchain ending on {} is not a valid update to existing chain ending on {}.",
@@ -55,6 +60,11 @@ public class BlockChainWsResource
 			            blockChain.lastBlock().hash());
 		}
 		return Response.ok().build();
+	}
+
+	private void broadCastBlock(BlockChain blockChain)
+	{
+		peers.broadCastNewBlock(blockChain.lastBlock(), blockChain);
 	}
 
 	@GET
