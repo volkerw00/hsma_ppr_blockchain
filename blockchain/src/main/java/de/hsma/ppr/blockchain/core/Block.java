@@ -1,15 +1,15 @@
 package de.hsma.ppr.blockchain.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.hash.Hashing;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
+import com.google.common.hash.Hashing;
 
 public class Block
 {
@@ -61,25 +61,24 @@ public class Block
 		                 1);
 	}
 
-	static Block mineBlock(Block lastBlock, Map<String, String> data)
+	public static Block mineBlock(Block lastBlock, Map<String, String> data)
 	{
 		Map<String, String> d = data != null ? new HashMap<>(data) : new HashMap<>();
 		String hash = "";
 		Instant timestamp = Instant.now();
 		int nonce = 0;
-		int difficulty = Difficulty.get();
+		Difficulty difficulty = Difficulty.get(lastBlock.difficulty);
 
 		do
 		{
 			timestamp = Instant.now();
-			Difficulty.adjust(lastBlock, timestamp);
-			difficulty = Difficulty.get();
-			hash = hash(timestamp, lastBlock.hash, d, nonce, difficulty);
+			difficulty.adjust(lastBlock, timestamp);
+			hash = hash(timestamp, lastBlock.hash, d, nonce, difficulty.get());
 			nonce = nonce + 1;
 
-		} while (!Difficulty.isSatisfied(hash));
+		} while (!difficulty.isSatisfied(hash));
 
-		Block block = new Block(timestamp, lastBlock.hash, hash, d, nonce - 1, difficulty);
+		Block block = new Block(timestamp, lastBlock.hash, hash, d, nonce - 1, difficulty.get());
 		return block;
 	}
 

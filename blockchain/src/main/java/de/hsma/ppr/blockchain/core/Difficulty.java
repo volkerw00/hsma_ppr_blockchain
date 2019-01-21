@@ -8,26 +8,37 @@ import com.google.common.base.Strings;
 
 public class Difficulty
 {
-	private static long	MINE_RATE		= 10000;
-	private static int	DIFFICULTY	= 6;
+	private static long MINE_RATE = 10000;
 
-	public static boolean isSatisfied(String hash)
+	private int difficulty;
+
+	private Difficulty(int difficulty)
 	{
-		return hexToBin(hash).startsWith(Strings.repeat("0", DIFFICULTY)); // TODO benchmark hex vs bin
+		this.difficulty = difficulty;
 	}
 
-	public static void adjust(Block lastBlock, Instant currentTimestamp)
+	public static Difficulty get(int difficulty)
+	{
+		return new Difficulty(difficulty);
+	}
+
+	public boolean isSatisfied(String hash)
+	{
+		return hexToBin(hash).startsWith(Strings.repeat("0", difficulty)); // TODO benchmark hex vs bin
+	}
+
+	public void adjust(Block lastBlock, Instant currentTimestamp)
 	{
 		long lastBlockTime = lastBlock.timeStamp();
 		long currentBlockTime = currentTimestamp.toEpochMilli();
 
-		DIFFICULTY = currentBlockTime - lastBlockTime > MINE_RATE ? lastBlock.difficulty() - 1 : lastBlock.difficulty() + 1;
-		if (DIFFICULTY < 1) DIFFICULTY = 1;
+		difficulty = currentBlockTime - lastBlockTime > MINE_RATE ? lastBlock.difficulty() - 1 : lastBlock.difficulty() + 1;
+		if (difficulty < 1) difficulty = 1;
 	}
 
-	public static int get()
+	public int get()
 	{
-		return DIFFICULTY;
+		return difficulty;
 	}
 
 	private static Map<String, String> digiMap = new HashMap<>();

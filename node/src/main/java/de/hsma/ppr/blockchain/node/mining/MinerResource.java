@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.node.resource;
+package de.hsma.ppr.blockchain.node.mining;
 
 import java.util.Map;
 
@@ -9,7 +9,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import de.hsma.ppr.blockchain.core.Block;
-import de.hsma.ppr.blockchain.node.miner.Miner;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,6 +31,6 @@ public class MinerResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Block mine(Map<String, String> data)
 	{
-		return miner.mineBlock(data);
+		return miner.mineBlock();
 	}
 }

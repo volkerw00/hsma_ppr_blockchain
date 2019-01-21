@@ -22,7 +22,7 @@ public class BlockChainTest
 	public void blockChain_shouldAddANewBlock()
 	{
 		BlockChain blockChain = new BlockChain();
-		blockChain.addBlock(data("data"));
+		blockChain.mineBlock(data("data"));
 
 		assertThat(blockChain.lastBlock().data(), hasValue("data"));
 	}
@@ -31,8 +31,8 @@ public class BlockChainTest
 	public void isValid_shouldReturnTrueForAValidChain()
 	{
 		BlockChain blockChain = new BlockChain();
-		blockChain.addBlock(data("foo"));
-		blockChain.addBlock(data("bar"));
+		blockChain.mineBlock(data("foo"));
+		blockChain.mineBlock(data("bar"));
 
 		assertTrue(BlockChain.isValid(blockChain));
 	}
@@ -41,7 +41,7 @@ public class BlockChainTest
 	public void isValid_shouldReturnFalseForTamperedWithChain()
 	{
 		BlockChain blockChain = new BlockChain();
-		Block foo = blockChain.addBlock(data("foo"));
+		Block foo = blockChain.mineBlock(data("foo"));
 		foo.data().replace("foo", "bar");
 
 		assertFalse(BlockChain.isValid(blockChain));
@@ -53,7 +53,7 @@ public class BlockChainTest
 		BlockChain blockChain = new BlockChain();
 
 		BlockChain newChain = new BlockChain();
-		newChain.addBlock(data("data"));
+		newChain.mineBlock(data("data"));
 
 		blockChain.replace(newChain);
 
@@ -64,10 +64,10 @@ public class BlockChainTest
 	public void blockChain_shouldNotBeReplacedByEquallyLongOrSmallerChain()
 	{
 		BlockChain blockChain = new BlockChain();
-		blockChain.addBlock(data("foo"));
+		blockChain.mineBlock(data("foo"));
 
 		BlockChain otherBlockChain = new BlockChain();
-		otherBlockChain.addBlock(data("bar"));
+		otherBlockChain.mineBlock(data("bar"));
 
 		blockChain.replace(otherBlockChain);
 
@@ -78,12 +78,12 @@ public class BlockChainTest
 	public void blockChain_shouldNotBeReplacedByTamperedWithChain()
 	{
 		BlockChain blockChain = new BlockChain();
-		blockChain.addBlock(data("foo"));
+		blockChain.mineBlock(data("foo"));
 
 		BlockChain otherBlockChain = new BlockChain();
-		Block bar = otherBlockChain.addBlock(data("bar"));
+		Block bar = otherBlockChain.mineBlock(data("bar"));
 		bar.data().replace("bar", "foo");
-		otherBlockChain.addBlock(data("baz"));
+		otherBlockChain.mineBlock(data("baz"));
 
 		blockChain.replace(otherBlockChain);
 

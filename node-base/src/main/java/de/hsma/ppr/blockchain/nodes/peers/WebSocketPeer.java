@@ -1,11 +1,17 @@
 package de.hsma.ppr.blockchain.nodes.peers;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.messages.WebSocketRequestMessage;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 
 import de.hsma.ppr.blockchain.core.BlockChain;
+import de.hsma.ppr.blockchain.exception.ByteConversionFailedExcetion;
 import de.hsma.ppr.blockchain.nodes.peers.Peer;
 import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
 import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
@@ -51,5 +57,22 @@ public class WebSocketPeer
 	{
 		logger.info("Broadcasting {} to {}", peer, target);
 		webSocketInterface.sendRequest("POST", "/ws/peers", peer.asJsonByteArray());
+	}
+
+	public void broadCastNewData(Map<String, String> data)
+	{
+		logger.info("Broadcasting {} to {}", data, target);
+		webSocketInterface.sendRequest("POST", "/ws/data", toJsonByteArray(data));
+	}
+
+	private byte[] toJsonByteArray(Map<String, String> data)
+	{
+		try
+		{
+			return new ObjectMapper().writeValueAsBytes(data);
+		} catch (JsonProcessingException e)
+		{
+			throw new ByteConversionFailedExcetion(e);
+		}
 	}
 }

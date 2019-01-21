@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.nodes.resource;
+package de.hsma.ppr.blockchain.nodes.blockchain;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.hsma.ppr.blockchain.core.Block;
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.exception.BlockChainNotValidException;
+import de.hsma.ppr.blockchain.nodes.data.DataPool;
 import de.hsma.ppr.blockchain.nodes.peers.Peers;
 
 @Path("/ws/blockChain")
@@ -24,14 +25,35 @@ public class BlockChainWsResource
 {
 	private static final Logger logger = LoggerFactory.getLogger(BlockChainWsResource.class);
 
-	private final BlockChain blockChain;
+	private BlockChain	blockChain;
+	private DataPool		dataPool;
+	private Peers				peers;
 
-	private final Peers peers;
+	private BlockChainWsResource()
+	{
+	}
 
-	public BlockChainWsResource(BlockChain blockChain, Peers peers)
+	public static BlockChainWsResource blockChainWsResource()
+	{
+		return new BlockChainWsResource();
+	}
+
+	public BlockChainWsResource withBlockChain(BlockChain blockChain)
 	{
 		this.blockChain = blockChain;
+		return this;
+	}
+
+	public BlockChainWsResource withDataPool(DataPool dataPool)
+	{
+		this.dataPool = dataPool;
+		return this;
+	}
+
+	public BlockChainWsResource withPeers(Peers peers)
+	{
 		this.peers = peers;
+		return this;
 	}
 
 	@PUT
@@ -52,6 +74,7 @@ public class BlockChainWsResource
 		if (chainReplaced)
 		{
 			logger.info("Replaced chain with received chain ending on {}", blockChain.lastBlock().hash());
+			dataPool.removeData(blockChain.lastBlock());
 			broadCastBlock(blockChain);
 		} else
 		{
