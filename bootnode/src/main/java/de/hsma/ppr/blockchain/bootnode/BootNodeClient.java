@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.node.bootnode;
+package de.hsma.ppr.blockchain.bootnode;
 
 import static java.util.stream.Collectors.toSet;
 

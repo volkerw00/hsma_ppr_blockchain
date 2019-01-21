@@ -1,4 +1,4 @@
-package de.hsma.ppr.blockchain.node.exception;
+package de.hsma.ppr.blockchain.nodes.exception;
 
 public class NodeRuntimeException extends RuntimeException
 {

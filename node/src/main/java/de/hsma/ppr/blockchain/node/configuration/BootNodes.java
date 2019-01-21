@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.bootnode.BootNodeClient;
-import de.hsma.ppr.blockchain.node.peers.Peers;
+import de.hsma.ppr.blockchain.nodes.peers.Peers;
 import de.hsma.ppr.blockchain.nodes.async.FutureCallback;
 import de.hsma.ppr.blockchain.nodes.async.Futures;
-import de.hsma.ppr.blockchain.nodes.resource.Peer;
+import de.hsma.ppr.blockchain.nodes.peers.Peer;
 import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 import de.hsma.ppr.blockchain.nodes.ws.WsRuntimeException;
 
@@ -125,7 +125,7 @@ public class BootNodes
 		this.bootNodes = bootNodes;
 	}
 
-	public BootNodeConnectionBuilder connect(String localAdress)
+	public BootNodeConnectionBuilder connect(String localAddress)
 	{
 		Map<String, BootNodeClient> bootNodeConnections = new HashMap<>();
 		// should only connect to one bootNode, but momentarily there is just one
@@ -134,7 +134,7 @@ public class BootNodes
 			logger.debug("Connecting to bootNode {}...", bootNode);
 			bootNodeConnections.put(bootNode, connectTo(bootNode));
 		}
-		return new BootNodeConnectionBuilder(bootNodeConnections).connect(localAdress);
+		return new BootNodeConnectionBuilder(bootNodeConnections).connect(localAddress);
 	}
 
 	private static BootNodeClient connectTo(String bootNode)

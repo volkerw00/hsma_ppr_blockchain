@@ -11,7 +11,7 @@ server:
 logging:
   level: DEBUG
   loggers:
-    de.hsma.ppr.blockchain: TRACE
+    de.hsma.ppr.blockchain: INFO
     javax.management: INFO
     io.dropwizard: INFO
     org.eclipse.jetty: INFO
@@ -20,5 +20,8 @@ logging:
   - type: console
 
 bootnodes:
-  urls:
-    - ws://localhost:5001
+  urls: []
+
+peers: 
+  broadcast: false
+  urls: []

@@ -18,18 +18,18 @@ import org.slf4j.LoggerFactory;
 import org.whispersystems.websocket.session.WebSocketSession;
 import org.whispersystems.websocket.session.WebSocketSessionContext;
 
-import de.hsma.ppr.blockchain.nodes.resource.Peer;
+import de.hsma.ppr.blockchain.nodes.peers.Peer;
 import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
 import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 
 @Path("/ws/peers")
-public class PeerWsResource
+public class BootNodePeerWsResource
 {
-	private static final Logger logger = LoggerFactory.getLogger(PeerWsResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(BootNodePeerWsResource.class);
 
 	private Set<Peer> peers = new HashSet<>();
 
-	public PeerWsResource(String self)
+	public BootNodePeerWsResource(String self)
 	{
 		peers.add(Peer.forAddress(self));
 	}
