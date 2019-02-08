@@ -1,5 +1,23 @@
-plugins {
-    id 'application'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+jar {
+    manifest {
+        attributes "Main-Class": "de.hsma.ppr.blockchain.node.Node"
+    }
+}
+
+shadowJar {
+  mergeServiceFiles()
 }
 
 mainClassName = 'de.hsma.ppr.blockchain.node.Node'
