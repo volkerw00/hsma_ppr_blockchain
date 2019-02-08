@@ -8,7 +8,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -122,25 +124,6 @@ public class Peers
 		peers.remove(peer);
 	}
 
-	public void broadCastNewBlock(Block block, BlockChain blockChain)
-	{
-		logger.info("Broadcasting {}", block);
-		shallowCopy(peers).stream().forEach(peer -> {
-			try
-			{
-				WebSocketPeer.connect(peer).broadCastNewBlock(blockChain);
-			} catch (WsConnectException e)
-			{
-				removePeer(peer);
-			}
-		});
-	}
-
-	private ArrayList<Peer> shallowCopy(Set<Peer> peers)
-	{
-		return new ArrayList<>(peers);
-	}
-
 	public Listener peerUpdateListener()
 	{
 		return new BlockChain.Listener() {
@@ -152,32 +135,9 @@ public class Peers
 		};
 	}
 
-	public void broadCastSelf(LifecycleEnvironment lifeCycleEnvironment)
+	private ArrayList<Peer> shallowCopy(Set<Peer> peers)
 	{
-		if (broadcastSelf)
-		{
-			logger.info("Broadcasting self to {} known peers.", peers.size());
-			logger.debug("Broadcasting self to {}", peers);
-			lifeCycleEnvironment.addServerLifecycleListener(server -> {
-				Stream<ServerConnector> connectors = getApplicationConnectors(server.getConnectors());
-				connectors.map(c -> getLocalAddress(c))
-				          .forEach(localAddress -> {
-					          shallowCopy(peers).forEach(peer -> {
-						          try
-						          {
-							          WebSocketPeer.connect(peer).broadCastNewPeer(Peer.forAddress(localAddress));
-						          } catch (WsConnectException e)
-						          {
-							          removePeer(peer);
-						          }
-					          });
-				          });
-			});
-			logger.info("Self broadcast finished.");
-		} else
-		{
-			logger.info("Self not broadcasted to known peers.");
-		}
+		return new ArrayList<>(peers);
 	}
 
 	private Stream<ServerConnector> getApplicationConnectors(Connector[] connectors)
@@ -197,6 +157,51 @@ public class Peers
 		} catch (UnknownHostException e)
 		{
 			throw new NodeRuntimeException(e);
+		}
+	}
+
+	private void broadCast(Consumer<WebSocketPeer> broadCast)
+	{
+		shallowCopy(peers).forEach(peer -> {
+			try
+			{
+				broadCast.accept(WebSocketPeer.connect(peer));
+			} catch (WsConnectException e)
+			{
+				removePeer(peer);
+			}
+		});
+	}
+
+	public void broadCastNewBlock(Block block, BlockChain blockChain)
+	{
+		logger.info("Broadcasting {}", block);
+		broadCast(peer -> peer.broadCastNewBlock(blockChain));
+	}
+
+	public void broadCastNewData(Map<String, String> data)
+	{
+		logger.info("Broadcasting {}", data);
+		broadCast(peer -> peer.broadCastNewData(data));
+	}
+
+	public void broadCastSelf(LifecycleEnvironment lifeCycleEnvironment)
+	{
+		if (broadcastSelf)
+		{
+			logger.info("Broadcasting self to {} known peers.", peers.size());
+			logger.debug("Broadcasting self to {}", peers);
+			lifeCycleEnvironment.addServerLifecycleListener(server -> {
+				Stream<ServerConnector> connectors = getApplicationConnectors(server.getConnectors());
+				connectors.map(c -> getLocalAddress(c))
+				          .forEach(localAddress -> {
+					          broadCast(peer -> peer.broadCastNewPeer(Peer.forAddress(localAddress)));
+				          });
+			});
+			logger.info("Self broadcast finished.");
+		} else
+		{
+			logger.info("Self not broadcasted to known peers.");
 		}
 	}
 }

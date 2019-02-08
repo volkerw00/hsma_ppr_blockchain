@@ -9,13 +9,14 @@ server:
     appenders: []
 
 logging:
-  level: DEBUG
+  level: ERROR
   loggers:
+    de.hsma.ppr.blockchain.node.mining.Miner: INFO
     de.hsma.ppr.blockchain: INFO
-    javax.management: INFO
+    # javax.management: INFO
     io.dropwizard: INFO
-    org.eclipse.jetty: INFO
-    org.glassfish.jersey: INFO
+    # org.eclipse.jetty: INFO
+    # org.glassfish.jersey: INFO
   appenders:
   - type: console
 
@@ -25,3 +26,8 @@ bootnodes:
 peers: 
   broadcast: false
   urls: []
+
+miner:
+  threads: 2
+  data:
+    created-by: Node-:5001

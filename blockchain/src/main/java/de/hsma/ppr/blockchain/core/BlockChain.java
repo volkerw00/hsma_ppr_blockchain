@@ -1,37 +1,22 @@
 package de.hsma.ppr.blockchain.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.hsma.ppr.blockchain.exception.BlockChainNotValidException;
 import de.hsma.ppr.blockchain.exception.ByteConversionFailedExcetion;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.*;
-
 public class BlockChain
 {
-	public static BlockChain forBlocks(List<Block> blocks) throws BlockChainNotValidException
-	{
-		LinkedList<Block> list = new LinkedList<>(blocks);
-
-		Collections.sort(list, (lb, rb) -> {
-			if (lb.hash().equals(rb.lastHash()))
-			{ return -1; }
-			return 1;
-		});
-
-		if (list.remove(Block.genesis()))
-		{
-			list.push(Block.genesis());
-		}
-
-		BlockChain blockChain = new BlockChain(blocks);
-		if (!isValid(blockChain))
-		{ throw new BlockChainNotValidException(); }
-		return blockChain;
-	}
-
 	public interface Listener
 	{
 		void onBlockMined(Block block, BlockChain blockChain);
@@ -48,15 +33,36 @@ public class BlockChain
 
 	private LinkedList<Block>	chain			= initialChain();
 	private Listener					listener	= new Listener.NoOp();
-
+	
 	public BlockChain()
 	{
 	}
-
+	
 	private BlockChain(List<Block> blocks)
 	{
 		this.chain = new LinkedList<>(blocks);
 	}
+	
+		public static BlockChain forBlocks(List<Block> blocks) throws BlockChainNotValidException
+		{
+			LinkedList<Block> list = new LinkedList<>(blocks);
+	
+			Collections.sort(list, (lb, rb) -> {
+				if (lb.hash().equals(rb.lastHash()))
+				{ return -1; }
+				return 1;
+			});
+	
+			if (list.remove(Block.genesis()))
+			{
+				list.push(Block.genesis());
+			}
+	
+			BlockChain blockChain = new BlockChain(blocks);
+			if (!isValid(blockChain))
+			{ throw new BlockChainNotValidException(); }
+			return blockChain;
+		}
 
 	public void addListener(Listener listener)
 	{
@@ -96,13 +102,27 @@ public class BlockChain
 		return true;
 	}
 
-	public Block addBlock(Map<String, String> data)
+	public Block mineBlock(Map<String, String> data) throws BlockChainNotValidException
 	{
-		Block lastBlock = this.chain.getLast();
+		Block lastBlock = lastBlock();
 		Block newBlock = Block.mineBlock(lastBlock, data);
-		this.chain.add(newBlock);
+		try
+		{
+			addBlock(newBlock);
+		} catch (BlockChainNotValidException e)
+		{
+			throw e;
+		}
 		listener.onBlockMined(newBlock, this);
 		return newBlock;
+	}
+
+	public void addBlock(Block newBlock) throws BlockChainNotValidException
+	{
+		List<Block> newBlocks = new LinkedList<>(blocks());
+		newBlocks.add(newBlock);
+
+		replace(BlockChain.forBlocks(newBlocks));
 	}
 
 	public Block lastBlock()

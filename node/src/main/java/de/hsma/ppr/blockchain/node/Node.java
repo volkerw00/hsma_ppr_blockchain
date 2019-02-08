@@ -11,12 +11,15 @@ import org.whispersystems.websocket.setup.WebSocketEnvironment;
 import de.hsma.ppr.blockchain.core.BlockChain;
 import de.hsma.ppr.blockchain.node.bootnode.BootNodeConnector;
 import de.hsma.ppr.blockchain.node.configuration.Configuration;
-import de.hsma.ppr.blockchain.node.miner.Miner;
-import de.hsma.ppr.blockchain.nodes.resource.PeerWsResource;
-import de.hsma.ppr.blockchain.node.resource.MinerResource;
+import de.hsma.ppr.blockchain.node.mining.Miner;
+import de.hsma.ppr.blockchain.node.mining.MinerResource;
+import de.hsma.ppr.blockchain.nodes.blockchain.BlockChainResource;
+import de.hsma.ppr.blockchain.nodes.blockchain.BlockChainWsResource;
+import de.hsma.ppr.blockchain.nodes.data.DataPool;
+import de.hsma.ppr.blockchain.nodes.data.DataResource;
+import de.hsma.ppr.blockchain.nodes.data.DataWsResource;
+import de.hsma.ppr.blockchain.nodes.peers.PeerWsResource;
 import de.hsma.ppr.blockchain.nodes.peers.Peers;
-import de.hsma.ppr.blockchain.nodes.resource.BlockChainResource;
-import de.hsma.ppr.blockchain.nodes.resource.BlockChainWsResource;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.setup.Environment;
 
@@ -32,13 +35,25 @@ public class Node extends io.dropwizard.Application<Configuration>
 		BlockChain blockChain = new BlockChain();
 		blockChain.addListener(peers.peerUpdateListener());
 
-		Miner miner = Miner.withBlockChain(blockChain);
+		DataPool dataPool = DataPool.withPeers(peers);
+		Miner miner = configuration.getMinerFactory()
+		                           .miner()
+		                           .withBlockChain(blockChain)
+		                           .withDataPool(dataPool);
+
+		BlockChainWsResource blockChainWsResource = BlockChainWsResource.blockChainWsResource()
+		                                                                .withBlockChain(blockChain)
+		                                                                .withDataPool(dataPool)
+		                                                                .withPeers(peers);
+		PeerWsResource peerWsResource = new PeerWsResource(peers);
+		DataWsResource dataWsResource = DataWsResource.withDataPool(dataPool);
 
 		setupWebSocketResource(configuration,
 		                       environment,
-		                       new PeerWsResource(peers),
-													 new BlockChainWsResource(blockChain, peers));
-													 
+		                       peerWsResource,
+		                       blockChainWsResource,
+		                       dataWsResource);
+
 		BootNodeConnector.bootNodeConnector()
 		                 .bootNodes(configuration.getBootNodes())
 		                 .lifeCycleEnvironment(environment.lifecycle())
@@ -52,6 +67,9 @@ public class Node extends io.dropwizard.Application<Configuration>
 		JerseyEnvironment jersey = environment.jersey();
 		jersey.register(MinerResource.withMiner(miner));
 		jersey.register(BlockChainResource.withBlockChain(blockChain));
+		jersey.register(DataResource.dataResource().withBlockChain(blockChain).withDataPool(dataPool));
+
+		miner.mine();
 	}
 
 	private void setupWebSocketResource(Configuration configuration, Environment environment, Object... components)

@@ -64,6 +64,7 @@ public class Peer
 			new ObjectMapper().writeValue(out, this);
 		} catch (IOException e)
 		{
+			// TODO proper expcetion handling!!!
 			e.printStackTrace();
 		}
 		return out.toByteArray();
