@@ -1,0 +1,553 @@
+version: '3'
+services:
+  bootnode-b01:
+    image: ppr/blockchain/bootnode:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.bootnodes.self=ws://bootnode-b01:5001 
+        -Ddw.server.applicationConnectors[0].port=5001 
+        -Ddw.server.adminConnectors[0].port=6001"
+    expose:
+      - "5001"
+    ports:
+      - "5001:5001"
+
+  
+  bootnode-b02:
+    image: ppr/blockchain/bootnode:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.bootnodes.self=ws://bootnode-b02:5002 
+        -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+        -Ddw.server.applicationConnectors[0].port=5002 
+        -Ddw.server.adminConnectors[0].port=6002"
+    expose:
+      - "5002"
+    ports:
+      - "5002:5002"
+
+  bootnode-b03:
+    image: ppr/blockchain/bootnode:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.bootnodes.self=ws://bootnode-b03:5003 
+        -Ddw.bootnodes.urls=ws://bootnode-b01:5001,ws://bootnode-b02:5002
+        -Ddw.server.applicationConnectors[0].port=5003 
+        -Ddw.server.adminConnectors[0].port=6003"
+    expose:
+      - "5003"
+    ports:
+      - "5003:5003"
+  
+  bootnode-b04:
+    image: ppr/blockchain/bootnode:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.bootnodes.self=ws://bootnode-b04:5004 
+        -Ddw.bootnodes.urls=ws://bootnode-b01:5001,ws://bootnode-b02:5002,ws://bootnode-b03:5003
+        -Ddw.server.applicationConnectors[0].port=5004 
+        -Ddw.server.adminConnectors[0].port=6004"
+    expose:
+      - "5004"
+    ports:
+      - "5004:5004"
+
+
+
+  node-b01-n01:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5101
+        -Ddw.server.adminConnectors[0].port=6101
+        -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+        -Ddw.miner.data.created-by=Node-b01-n01:5101"
+    expose:
+      - "5101"
+    ports:
+      - "5101:5101"
+
+  node-b01-n02:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5102 
+        -Ddw.server.adminConnectors[0].port=6102 
+        -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+        -Ddw.miner.data.created-by=Node-b01-n02:5102"
+    expose:
+      - "5102"
+    ports:
+      - "5102:5102"
+
+  # node-b01-n03:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5103
+  #       -Ddw.server.adminConnectors[0].port=6103
+  #       -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+  #       -Ddw.miner.data.created-by=Node-b01-n03:5103"
+  #   expose:
+  #     - "5103"
+  #   ports:
+  #     - "5103:5103"
+# 
+  # node-b01-n04:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5104 
+  #       -Ddw.server.adminConnectors[0].port=6104 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+  #       -Ddw.miner.data.created-by=Node-b01-n04:5104"
+  #   expose:
+  #     - "5104"
+  #   ports:
+  #     - "5104:5104"
+# 
+  # node-b01-n05:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5105
+  #       -Ddw.server.adminConnectors[0].port=6105
+  #       -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+  #       -Ddw.miner.data.created-by=Node-b01-n05:5105"
+  #   expose:
+  #     - "5105"
+  #   ports:
+  #     - "5105:5105"
+# 
+  # node-b01-n06:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5106 
+  #       -Ddw.server.adminConnectors[0].port=6106 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+  #       -Ddw.miner.data.created-by=Node-b01-n06:5106"
+  #   expose:
+  #     - "5106"
+  #   ports:
+  #     - "5106:5106"
+
+  # node-b01-n07:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5107
+  #       -Ddw.server.adminConnectors[0].port=6107
+  #       -Ddw.bootnodes.urls=ws://bootnode-b01:5001
+  #       -Ddw.miner.data.created-by=Node-b01-n07:5107"
+  #   expose:
+  #     - "5107"
+  #   ports:
+  #     - "5107:5107"
+
+
+
+  node-b02-n01:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5201
+        -Ddw.server.adminConnectors[0].port=6201
+        -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+        -Ddw.miner.data.created-by=Node-b01-n01:5201"
+    expose:
+      - "5201"
+    ports:
+      - "5201:5201"
+
+  node-b02-n02:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5202 
+        -Ddw.server.adminConnectors[0].port=6202 
+        -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+        -Ddw.miner.data.created-by=Node-b02-n02:5202"
+    expose:
+      - "5202"
+    ports:
+      - "5202:5202"
+
+  # node-b02-n03:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5203
+  #       -Ddw.server.adminConnectors[0].port=6203
+  #       -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+  #       -Ddw.miner.data.created-by=Node-b02-n03:5203"
+  #   expose:
+  #     - "5203"
+  #   ports:
+  #     - "5203:5203"
+# 
+  # node-b02-n04:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5204 
+  #       -Ddw.server.adminConnectors[0].port=6204 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+  #       -Ddw.miner.data.created-by=Node-b02-n04:5204"
+  #   expose:
+  #     - "5204"
+  #   ports:
+  #     - "5204:5204"
+# 
+  # node-b02-n05:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5205
+  #       -Ddw.server.adminConnectors[0].port=6205
+  #       -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+  #       -Ddw.miner.data.created-by=Node-b02-n05:5205"
+  #   expose:
+  #     - "5205"
+  #   ports:
+  #     - "5205:5205"
+# 
+  # node-b02-n06:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5206 
+  #       -Ddw.server.adminConnectors[0].port=6206 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+  #       -Ddw.miner.data.created-by=Node-b02-n06:5206"
+  #   expose:
+  #     - "5206"
+  #   ports:
+  #     - "5206:5206"
+
+  # node-b02-n07:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5207
+  #       -Ddw.server.adminConnectors[0].port=6207
+  #       -Ddw.bootnodes.urls=ws://bootnode-b02:5002
+  #       -Ddw.miner.data.created-by=Node-b02-n07:5207"
+  #   expose:
+  #     - "5207"
+  #   ports:
+  #     - "5207:5207"
+
+
+
+  node-b03-n01:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5301
+        -Ddw.server.adminConnectors[0].port=6301
+        -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+        -Ddw.miner.data.created-by=Node-b03-n01:5301"
+    expose:
+      - "5301"
+    ports:
+      - "5301:5301"
+
+  node-b03-n02:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5302 
+        -Ddw.server.adminConnectors[0].port=6302 
+        -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+        -Ddw.miner.data.created-by=Node-b03-n02:5302"
+    expose:
+      - "5302"
+    ports:
+      - "5302:5302"
+
+  # node-b03-n03:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5303
+  #       -Ddw.server.adminConnectors[0].port=6303
+  #       -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+  #       -Ddw.miner.data.created-by=Node-b03-n03:5303"
+  #   expose:
+  #     - "5303"
+  #   ports:
+  #     - "5303:5303"
+# 
+  # node-b03-n04:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5304 
+  #       -Ddw.server.adminConnectors[0].port=6304 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+  #       -Ddw.miner.data.created-by=Node-b03-n04:5304"
+  #   expose:
+  #     - "5304"
+  #   ports:
+  #     - "5304:5304"
+# 
+  # node-b03-n05:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5305
+  #       -Ddw.server.adminConnectors[0].port=6305
+  #       -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+  #       -Ddw.miner.data.created-by=Node-b03-n05:5305"
+  #   expose:
+  #     - "5305"
+  #   ports:
+  #     - "5305:5305"
+# 
+  # node-b03-n06:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5306 
+  #       -Ddw.server.adminConnectors[0].port=6306 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+  #       -Ddw.miner.data.created-by=Node-b03-n06:5306"
+  #   expose:
+  #     - "5306"
+  #   ports:
+  #     - "5306:5306"
+
+  # node-b03-n07:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5307
+  #       -Ddw.server.adminConnectors[0].port=6307
+  #       -Ddw.bootnodes.urls=ws://bootnode-b03:5003
+  #       -Ddw.miner.data.created-by=Node-b03-n07:5307"
+  #   expose:
+  #     - "5307"
+  #   ports:
+  #     - "5307:5307"
+
+
+  node-b04-n01:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5401
+        -Ddw.server.adminConnectors[0].port=6401
+        -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+        -Ddw.miner.data.created-by=Node-b04-n01:5401"
+    expose:
+      - "5401"
+    ports:
+      - "5401:5401"
+
+  node-b04-n02:
+    image: ppr/blockchain/node:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+    environment:
+      - "JAVA_OPTS=
+        -Ddw.server.applicationConnectors[0].port=5402 
+        -Ddw.server.adminConnectors[0].port=6402 
+        -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+        -Ddw.miner.data.created-by=Node-b04-n02:5402"
+    expose:
+      - "5402"
+    ports:
+      - "5402:5402"
+
+  # node-b04-n03:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5403
+  #       -Ddw.server.adminConnectors[0].port=6403
+  #       -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+  #       -Ddw.miner.data.created-by=Node-b04-n03:5403"
+  #   expose:
+  #     - "5403"
+  #   ports:
+  #     - "5403:5403"
+# 
+  # node-b04-n04:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5404 
+  #       -Ddw.server.adminConnectors[0].port=6404 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+  #       -Ddw.miner.data.created-by=Node-b04-n04:5404"
+  #   expose:
+  #     - "5404"
+  #   ports:
+  #     - "5404:5404"
+# 
+  # node-b04-n05:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5405
+  #       -Ddw.server.adminConnectors[0].port=6405
+  #       -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+  #       -Ddw.miner.data.created-by=Node-b04-n05:5405"
+  #   expose:
+  #     - "5405"
+  #   ports:
+  #     - "5405:5405"
+# 
+  # node-b04-n06:
+  #   image: ppr/blockchain/node:latest
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.25'
+  #   environment:
+  #     - "JAVA_OPTS=
+  #       -Ddw.server.applicationConnectors[0].port=5406 
+  #       -Ddw.server.adminConnectors[0].port=6406 
+  #       -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+  #       -Ddw.miner.data.created-by=Node-b04-n06:5406"
+  #   expose:
+  #     - "5406"
+  #   ports:
+  #     - "5406:5406"
+
+ # node-b04-n07:
+ #   image: ppr/blockchain/node:latest
+ #   deploy:
+ #     resources:
+ #       limits:
+ #         cpus: '0.25'
+ #   environment:
+ #     - "JAVA_OPTS=
+ #       -Ddw.server.applicationConnectors[0].port=5407
+ #       -Ddw.server.adminConnectors[0].port=6407
+ #       -Ddw.bootnodes.urls=ws://bootnode-b04:5004
+ #       -Ddw.miner.data.created-by=Node-b04-n07:5407"
+ #   expose:
+ #     - "5407"
+ #   ports:
+ #     - "5407:5407"
+

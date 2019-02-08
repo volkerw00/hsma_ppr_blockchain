@@ -8,7 +8,7 @@ import com.google.common.base.Strings;
 
 public class Difficulty
 {
-	private static long MINE_RATE = 10000;
+	private static long MINE_RATE = 20000;
 
 	private int difficulty;
 

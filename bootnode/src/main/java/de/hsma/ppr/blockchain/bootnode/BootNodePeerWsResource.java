@@ -22,7 +22,7 @@ import de.hsma.ppr.blockchain.nodes.peers.Peer;
 import de.hsma.ppr.blockchain.nodes.ws.WebSocketInterface;
 import de.hsma.ppr.blockchain.nodes.ws.WsConnectException;
 
-@Path("/ws/peers")
+@Path("/boot/ws/peers")
 public class BootNodePeerWsResource
 {
 	private static final Logger logger = LoggerFactory.getLogger(BootNodePeerWsResource.class);
@@ -60,7 +60,7 @@ public class BootNodePeerWsResource
 			try
 			{
 				WebSocketInterface webSocket = connect(peer);
-				webSocket.sendRequest("POST", "/ws/peers", newPeer.asJsonByteArray());
+				webSocket.sendRequest("POST", "/boot/ws/peers", newPeer.asJsonByteArray());
 			} catch (WsConnectException e)
 			{
 				removePeer(peer);
@@ -86,7 +86,7 @@ public class BootNodePeerWsResource
 			try
 			{
 				WebSocketInterface client = connect(peer);
-				client.sendRequest("DELETE", "/ws/peers", removedPeer.asJsonByteArray());
+				client.sendRequest("DELETE", "/boot/ws/peers", removedPeer.asJsonByteArray());
 			} catch (WsConnectException e)
 			{
 				removePeer(peer);

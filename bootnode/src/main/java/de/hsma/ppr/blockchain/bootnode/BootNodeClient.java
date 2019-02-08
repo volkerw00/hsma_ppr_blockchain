@@ -95,7 +95,7 @@ public class BootNodeClient
 		logger.debug("Sending hello...");
 
 		byte[] body = Peer.forAddress(localAddress).asJsonByteArray();
-		ListenableFuture<WebSocketResponseMessage> response = webSocket.sendRequest("POST", "/ws/peers", body);
+		ListenableFuture<WebSocketResponseMessage> response = webSocket.sendRequest("POST", "/boot/ws/peers", body);
 
 		SettableFuture<Boolean> future = SettableFuture.create();
 
@@ -119,7 +119,7 @@ public class BootNodeClient
 
 	public ListenableFuture<Set<Peer>> getPeers()
 	{
-		ListenableFuture<WebSocketResponseMessage> response = webSocket.sendRequest("GET", "/ws/peers");
+		ListenableFuture<WebSocketResponseMessage> response = webSocket.sendRequest("GET", "/boot/ws/peers");
 		SettableFuture<Set<Peer>> future = SettableFuture.create();
 
 		Futures.addCallback(response, FutureCallback.<WebSocketResponseMessage>callback().onSuccess(result -> {
