@@ -23,6 +23,10 @@ public class Configuration extends io.dropwizard.Configuration
 	@NotNull
 	private Peers peers = new Peers();
 
+	@Valid
+	@NotNull
+	private MinerFactory minerFactory = new MinerFactory();
+
 	public WebSocketConfiguration getWebSocketConfiguration()
 	{
 		return webSocketConfiguration;
@@ -50,5 +54,17 @@ public class Configuration extends io.dropwizard.Configuration
 	public void setPeers(Peers peers)
 	{
 		this.peers = peers;
+	}
+
+	@JsonProperty("miner")
+	public MinerFactory getMinerFactory()
+	{
+		return minerFactory;
+	}
+
+	@JsonProperty("miner")
+	public void setMinerFactory(MinerFactory minerFactory)
+	{
+		this.minerFactory = minerFactory;
 	}
 }

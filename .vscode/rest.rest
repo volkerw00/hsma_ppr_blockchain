@@ -1,9 +1,13 @@
 ###
-# GET :5001/blocks
+# GET :5011/blocks
 ###
 GET http://localhost:5101/blocks HTTP/1.1
 ###
-# PUT :5001/data
+# GET :5102/blocks
+###
+GET http://localhost:5102/blocks HTTP/1.1
+###
+# PUT :5101/data
 ###
 PUT http://localhost:5101/data HTTP/1.1
 content-type: application/json

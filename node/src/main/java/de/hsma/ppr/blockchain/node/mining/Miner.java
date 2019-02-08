@@ -24,13 +24,18 @@ public class Miner
 	@Nullable
 	private BlockChain blockChain;
 
-	private Miner()
+	private Map<String, String>	staticData;
+	private int									threads;
+
+	private Miner(int threads, Map<String, String> data)
 	{
+		this.threads = threads;
+		this.staticData = data;
 	}
 
-	public static Miner miner()
+	public static Miner miner(int threads, Map<String, String> data)
 	{
-		return new Miner();
+		return new Miner(threads, data);
 	}
 
 	public Miner withDataPool(DataPool dataPool)
@@ -49,6 +54,7 @@ public class Miner
 	{
 		Map<String, String> nextData = dataPool.nextData();
 		logger.debug("Adding data {} to next block", nextData);
+		nextData.putAll(staticData);
 		try
 		{
 			return blockChain.mineBlock(nextData);
@@ -61,9 +67,8 @@ public class Miner
 
 	public void mine()
 	{
-		int nThreads = 2;
-		ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-		for (int i = 0; i < nThreads; i++)
+		ExecutorService executorService = Executors.newFixedThreadPool(threads);
+		for (int i = 0; i < threads; i++)
 		{
 			executorService.execute(() -> {
 				while (true)

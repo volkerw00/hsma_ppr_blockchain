@@ -36,9 +36,10 @@ public class Node extends io.dropwizard.Application<Configuration>
 		blockChain.addListener(peers.peerUpdateListener());
 
 		DataPool dataPool = DataPool.withPeers(peers);
-		Miner miner = Miner.miner()
-		                   .withBlockChain(blockChain)
-		                   .withDataPool(dataPool);
+		Miner miner = configuration.getMinerFactory()
+		                           .miner()
+		                           .withBlockChain(blockChain)
+		                           .withDataPool(dataPool);
 
 		BlockChainWsResource blockChainWsResource = BlockChainWsResource.blockChainWsResource()
 		                                                                .withBlockChain(blockChain)

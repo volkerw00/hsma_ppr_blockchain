@@ -26,7 +26,7 @@ public class MinerResourceTest
 
 	@ClassRule
 	public static final ResourceTestRule resources = ResourceTestRule.builder()
-	                                                                 .addResource(MinerResource.withMiner(Miner.miner()
+	                                                                 .addResource(MinerResource.withMiner(Miner.miner(1, new HashMap<>())
 	                                                                                                           .withBlockChain(blockChain)
 	                                                                                                           .withDataPool(dataPool)))
 	                                                                 .addResource(DataResource.dataResource()
