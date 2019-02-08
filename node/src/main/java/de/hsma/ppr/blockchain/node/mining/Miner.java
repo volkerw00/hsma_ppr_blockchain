@@ -49,18 +49,14 @@ public class Miner
 	{
 		Map<String, String> nextData = dataPool.nextData();
 		logger.debug("Adding data {} to next block", nextData);
-
-		Block lastBlock = blockChain.lastBlock();
-		Block newBlock = Block.mineBlock(lastBlock, nextData);
 		try
 		{
-			blockChain.addBlock(newBlock);
+			return blockChain.mineBlock(nextData);
 		} catch (BlockChainNotValidException e)
 		{
 			logger.debug("Mined invalid chain", e);
 			return mineBlock();
 		}
-		return newBlock;
 	}
 
 	public void mine()

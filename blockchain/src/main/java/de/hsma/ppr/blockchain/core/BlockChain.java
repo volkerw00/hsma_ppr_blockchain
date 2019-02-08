@@ -102,11 +102,17 @@ public class BlockChain
 		return true;
 	}
 
-	public Block mineBlock(Map<String, String> data)
+	public Block mineBlock(Map<String, String> data) throws BlockChainNotValidException
 	{
-		Block lastBlock = this.chain.getLast();
+		Block lastBlock = lastBlock();
 		Block newBlock = Block.mineBlock(lastBlock, data);
-		this.chain.add(newBlock);
+		try
+		{
+			addBlock(newBlock);
+		} catch (BlockChainNotValidException e)
+		{
+			throw e;
+		}
 		listener.onBlockMined(newBlock, this);
 		return newBlock;
 	}
